@@ -3,6 +3,25 @@ import { ChevronLeft, Info, X, Check } from 'lucide-react';
 import bscLogo from '../bnb-chain-binance-smart-chain-logo.png';
 import Jazzicon from 'react-jazzicon';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { BrowserProvider, Contract, formatUnits } from 'ethers';
+import erc20Abi from '../erc20Abi.json';
+
+const SUPPORTED_TOKENS = [
+  {
+    name: 'Tether USD',
+    symbol: 'USDT',
+    address: '0xdAC17F958D2ee523a2206206994597C13D831ec7', // Mainnet USDT
+    image: require('../tether-logo.webp'),
+    decimals: 6,
+  },
+  {
+    name: 'USD Coin',
+    symbol: 'USDC',
+    address: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', // Mainnet USDC
+    image: require('../usdc.png'), // Replace with actual USDC image
+    decimals: 6,
+  },
+];
 
 export default function BorrowPoolDetailsPage() {
   const [depositAmount, setDepositAmount] = useState('5401');
@@ -14,6 +33,9 @@ export default function BorrowPoolDetailsPage() {
   const [depositFocused, setDepositFocused] = useState(false);
   const [borrowFocused, setBorrowFocused] = useState(false);
   const [selectedCoin, setSelectedCoin] = useState('USDT');
+  const [tokenBalances, setTokenBalances] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedToken, setSelectedToken] = useState(SUPPORTED_TOKENS[0]);
   const navigate = useNavigate();
   const location = useLocation();
   const { poolId } = useParams();
@@ -40,6 +62,13 @@ export default function BorrowPoolDetailsPage() {
     // Check if wallet is already connected on component mount
     checkWalletConnection();
   }, []);
+
+  useEffect(() => {
+    if (walletConnected && walletAddress) {
+      fetchTokenBalances(walletAddress);
+    }
+    // eslint-disable-next-line
+  }, [walletConnected, walletAddress]);
 
   const checkWalletConnection = async () => {
     if (typeof window.ethereum !== 'undefined') {
@@ -110,6 +139,29 @@ export default function BorrowPoolDetailsPage() {
 
   // Mock wallet coins for demo; in real app, fetch from wallet
   const walletCoins = walletConnected ? ['USDT', 'USDC'] : ['USDT'];
+
+  const fetchTokenBalances = async (address) => {
+    if (!window.ethereum) return;
+    const provider = new BrowserProvider(window.ethereum);
+    const balances = await Promise.all(
+      SUPPORTED_TOKENS.map(async (token) => {
+        try {
+          const contract = new Contract(token.address, erc20Abi, provider);
+          const balance = await contract.balanceOf(address);
+          return {
+            ...token,
+            balance: formatUnits(balance, token.decimals),
+          };
+        } catch (e) {
+          return { ...token, balance: '0.00' };
+        }
+      })
+    );
+    setTokenBalances(balances);
+    // Set selectedToken to the first with a nonzero balance, or default
+    const firstWithBalance = balances.find(t => parseFloat(t.balance) > 0) || balances[0];
+    setSelectedToken(firstWithBalance);
+  };
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -201,19 +253,35 @@ export default function BorrowPoolDetailsPage() {
               <div className={`flex-1 bg-white rounded-xl shadow-sm border p-6 ${borrowFocused ? 'border-blue-500' : 'border-gray-200'}`}>
                 <div className="text-sm font-medium text-gray-700 mb-3">Borrow</div>
                 <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-2 bg-gray-100 rounded-full p-1 pr-3">
-                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-sm font-bold">T</span>
-                    </div>
-                    <select
-                      value={selectedCoin}
-                      onChange={e => setSelectedCoin(e.target.value)}
-                      className="font-medium text-gray-700 bg-transparent border-none focus:outline-none focus:ring-0 appearance-none"
+                  <div className="relative">
+                    <button
+                      type="button"
+                      className="flex items-center bg-gray-100 rounded-full px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                      onClick={() => setDropdownOpen((open) => !open)}
                     >
-                      {walletCoins.map(coin => (
-                        <option key={coin} value={coin}>{coin}</option>
-                      ))}
-                    </select>
+                      <img src={selectedToken.image} alt={selectedToken.symbol} className="w-6 h-6 rounded-full mr-2" />
+                      <span className="font-medium text-gray-900 mr-2">{selectedToken.symbol}</span>
+                      {/* <span className="font-semibold text-green-700">{parseFloat(selectedToken.balance || 0).toFixed(2)}</span> */}
+                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    {dropdownOpen && (
+                      <div className="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
+                        {tokenBalances.map((token) => (
+                          <button
+                            key={token.symbol}
+                            className="flex items-center w-full px-4 py-2 hover:bg-gray-100 focus:outline-none"
+                            onClick={() => {
+                              setSelectedToken(token);
+                              setDropdownOpen(false);
+                            }}
+                          >
+                            <img src={token.image} alt={token.symbol} className="w-6 h-6 rounded-full mr-2" />
+                            <span className="font-medium text-gray-900 mr-2">{token.symbol}</span>
+                            <span className="text-gray-700">{parseFloat(token.balance || 0).toFixed(2)}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   <div className="text-right">
                     <div className="flex items-center">
