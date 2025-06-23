@@ -9,6 +9,8 @@ export default function BorrowPage() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+  const [depositFocused, setDepositFocused] = useState(false);
+  const [borrowFocused, setBorrowFocused] = useState(false);
 
   // Calculate LTV dynamically
   const calculateLTV = () => {
@@ -170,111 +172,147 @@ export default function BorrowPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Borrow Section */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Borrow</h3>
-            
-            {/* Deposit Amount */}
-            <div className="mb-6">
-              <div className="flex items-center mb-3">
-                <span className="text-sm font-medium text-gray-700">Deposit amount</span>
-                <Info className="w-4 h-4 ml-2 text-gray-400" />
-              </div>
-              <div className="border border-gray-300 rounded-lg p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center space-x-3">
-                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                      selectedOption === 'YES' ? 'bg-green-500' : 'bg-red-500'
-                    }`}>
-                      {selectedOption === 'YES' ? (
-                        <Check className="w-3 h-3 text-white" />
-                      ) : (
-                        <X className="w-3 h-3 text-white" />
-                      )}
-                    </div>
-                    <select 
-                      value={selectedOption} 
-                      onChange={handleOptionChange}
-                      className="font-medium text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0"
-                    >
-                      <option value="NO">NO</option>
-                      <option value="YES">YES</option>
-                    </select>
-                  </div>
-                  <div className="text-right">
-                    <div className="flex items-center">
-                      <span className="text-2xl font-bold text-gray-900">$</span>
-                      <input
-                        type="text"
-                        value={depositAmount}
-                        onChange={handleAmountChange}
-                        className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-20 ml-1"
-                        placeholder="0.00"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="text-sm text-gray-500">25.32 / 2,600 shares</div>
-              </div>
-            </div>
-
-            {/* Borrow Amount */}
-            <div className="mb-6">
-              <div className="text-sm font-medium text-gray-700 mb-3">Borrow amount</div>
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-sm font-bold">T</span>
-                </div>
-                <span className="font-medium text-gray-700">USDT</span>
-                <div className="ml-auto text-right">
-                  <div className="flex items-center">
-                    <span className="text-xl font-bold text-gray-900">$</span>
-                    <input
-                      type="text"
-                      value={borrowAmount}
-                      onChange={handleBorrowAmountChange}
-                      className="text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-16 ml-1"
-                      placeholder="0.00"
-                    />
-                  </div>
-                  <div className="text-sm text-gray-500">$ 199.22</div>
-                </div>
-              </div>
-            </div>
-
-            {/* LTV Slider */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-gray-700">Loan to Value (LTV)</span>
-                <span className="text-xl font-bold text-gray-900">{ltvValue.toFixed(2)}%</span>
-              </div>
-              <div className="text-xs text-gray-500 mb-4">
-                Ratio of the collateral value to the borrowed value
-              </div>
-              <div className="text-xs text-gray-400 mb-2 text-right">max. 82.00%</div>
+          {/* Deposit and Borrow Section */}
+          <div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+              <h3 className="text-xl font-bold text-gray-900 mb-6">Deposit & Borrow</h3>
               
-              <div className="relative">
-                <input
-                  type="range"
-                  min="0"
-                  max="82"
-                  step="0.01"
-                  value={Math.min(ltvValue, 82)}
-                  onChange={handleLtvChange}
-                  className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
-                />
+              {/* Amounts Section - Side by Side */}
+              <div className="flex space-x-4">
+                {/* Deposit Amount */}
+                <div className="flex-1">
+                  <div className="flex items-center mb-3">
+                    <span className="text-sm font-medium text-gray-700">Deposit amount</span>
+                    <Info className="w-4 h-4 ml-2 text-gray-400" />
+                  </div>
+                  <div 
+                    className={`rounded-lg ${depositFocused ? 'border border-gray-300 p-4' : 'border border-transparent p-4'}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-3">
+                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                          selectedOption === 'YES' ? 'bg-green-500' : 'bg-red-500'
+                        }`}>
+                          {selectedOption === 'YES' ? (
+                            <Check className="w-3 h-3 text-white" />
+                          ) : (
+                            <X className="w-3 h-3 text-white" />
+                          )}
+                        </div>
+                        <select 
+                          value={selectedOption} 
+                          onChange={handleOptionChange}
+                          className="font-medium text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0"
+                        >
+                          <option value="NO">NO</option>
+                          <option value="YES">YES</option>
+                        </select>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center">
+                          <span className="text-2xl font-bold text-gray-900">$</span>
+                          <input
+                            type="text"
+                            value={depositAmount}
+                            onChange={handleAmountChange}
+                            onFocus={() => setDepositFocused(true)}
+                            onBlur={() => setDepositFocused(false)}
+                            className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-20 ml-1"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500">25.32 / 2,600 shares</div>
+                  </div>
+                </div>
+
+                {/* Borrow Amount */}
+                <div className="flex-1">
+                  <div className="text-sm font-medium text-gray-700 mb-3">Borrow amount</div>
+                  <div 
+                    className={`rounded-lg ${borrowFocused ? 'border border-gray-300 p-4' : 'border border-transparent p-4'}`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <span className="text-white text-sm font-bold">T</span>
+                        </div>
+                        <span className="font-medium text-gray-700">USDT</span>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center">
+                          <span className="text-xl font-bold text-gray-900">$</span>
+                          <input
+                            type="text"
+                            value={borrowAmount}
+                            onChange={handleBorrowAmountChange}
+                            onFocus={() => setBorrowFocused(true)}
+                            onBlur={() => setBorrowFocused(false)}
+                            className="text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-16 ml-1"
+                            placeholder="0.00"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="text-sm text-gray-500">$ 199.22</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+              {/* LTV Slider */}
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-lg font-semibold text-gray-900">Loan to Value (LTV)</span>
+                  <span className="text-2xl font-bold text-gray-900">{ltvValue.toFixed(2)}%</span>
+                </div>
+                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                  <span>Ratio of the collateral value to the borrowed value</span>
+                  <span>max. 82.00%</span>
+                </div>
+
+                <div className="relative h-8">
+                  {/* Segmented Track */}
+                  <div className="absolute top-1/2 -translate-y-1/2 w-full flex items-center h-3">
+                    <div className="flex-1 h-full bg-gray-200 rounded-l-full"></div>
+                    <div className="w-1.5 h-full"></div> {/* Gap */}
+                    <div className="flex-1 h-full bg-gray-200"></div>
+                    <div className="w-1.5 h-full"></div> {/* Gap */}
+                    <div className="flex-1 h-full bg-gray-200 rounded-r-full"></div>
+                  </div>
+
+                  {/* Progress Fill */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 h-3 bg-blue-500 rounded-full"
+                    style={{ width: `${(Math.min(ltvValue, 82) / 82) * 100}%` }}
+                  ></div>
+                  
+                  {/* Liquidation Marker */}
+                  <div
+                    className="absolute top-1/2 -translate-y-1/2 w-px h-5 bg-blue-400"
+                    style={{ left: '82%' }}
+                  />
+
+                  <input
+                    type="range"
+                    min="0"
+                    max="82"
+                    step="0.01"
+                    value={Math.min(ltvValue, 82)}
+                    onChange={handleLtvChange}
+                    className="w-full h-full absolute top-0 left-0 appearance-none bg-transparent cursor-pointer slider"
+                  />
+                </div>
+
                 <div className="flex justify-between text-xs text-gray-500 mt-2">
                   <span>Conservative</span>
                   <span>Moderate</span>
-                  <span>Aggressive</span>
-                </div>
-              </div>
-              
-              <div className="flex justify-between items-center mt-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-3 h-3 bg-blue-300 rounded"></div>
-                  <span className="text-xs text-gray-500">82.00%</span>
-                  <span className="text-xs text-gray-500">Liquidation</span>
+                  <div className="flex flex-col items-end">
+                    <span>Aggressive</span>
+                    <span className="text-blue-600 font-medium">82.00% Liquidation</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -320,24 +358,34 @@ export default function BorrowPage() {
 
       <style jsx>{`
         .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
           appearance: none;
-          height: 20px;
-          width: 20px;
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
-          background: #3B82F6;
+          background-color: black;
+          background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M8 0.5 L8 15.5 M0.5 8 L15.5 8" stroke="white" stroke-width="1.5" /><path d="M2.92 2.92 L13.08 13.08 M2.92 13.08 L13.08 2.92" stroke="white" stroke-width="1.5" /></svg>');
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 14px 14px;
           cursor: pointer;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          margin-top: -1px;
+          position: relative;
+          z-index: 10;
         }
         
         .slider::-moz-range-thumb {
-          height: 20px;
-          width: 20px;
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
-          background: #3B82F6;
+          background-color: black;
+          background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M8 0.5 L8 15.5 M0.5 8 L15.5 8" stroke="white" stroke-width="1.5" /><path d="M2.92 2.92 L13.08 13.08 M2.92 13.08 L13.08 2.92" stroke="white" stroke-width="1.5" /></svg>');
+          background-position: center;
+          background-repeat: no-repeat;
+          background-size: 14px 14px;
           cursor: pointer;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+          position: relative;
+          z-index: 10;
         }
       `}</style>
     </div>
