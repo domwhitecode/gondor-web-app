@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Info, X, Check } from 'lucide-react';
-import { ethers } from 'ethers';
+import bscLogo from '../bnb-chain-binance-smart-chain-logo.png';
+import Jazzicon from 'react-jazzicon';
 
 export default function BorrowPage() {
   const [depositAmount, setDepositAmount] = useState('5401');
@@ -104,7 +105,7 @@ export default function BorrowPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-slate-100">
       {/* Header */}
       <div className="px-6 py-4">
         <div className="bg-white rounded-full shadow-sm p-2 max-w-7xl mx-auto">
@@ -140,9 +141,23 @@ export default function BorrowPage() {
             <button
               onClick={walletConnected ? disconnectWallet : connectWallet}
               disabled={isConnecting}
-              className="bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-full font-medium shadow-md transition-transform transform hover:scale-105"
+              className={`flex items-center space-x-2 px-6 py-2 rounded-full font-medium shadow-md transition-transform transform
+                ${walletConnected
+                  ? 'bg-white text-gray-900'
+                  : 'bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white hover:scale-105'}
+                disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none`}
             >
-              {isConnecting ? 'Connecting...' : walletConnected ? formatAddress(walletAddress) : 'Connect wallet'}
+              {isConnecting ? 'Connecting...' : walletConnected ? (
+                <>
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-white mr-2">
+                    <img src={bscLogo} alt="BSC" className="w-6 h-6" />
+                  </span>
+                  <span className="flex items-center bg-white rounded-full px-3 py-1 text-sm font-mono font-medium border border-gray-200">
+                    <Jazzicon diameter={24} seed={parseInt(walletAddress.slice(2, 10), 16)} />
+                    <span className="ml-2">{formatAddress(walletAddress)}</span>
+                  </span>
+                </>
+              ) : 'Connect wallet'}
             </button>
           </div>
         </div>
@@ -317,7 +332,10 @@ export default function BorrowPage() {
                   </div>
                 </div>
 
-                <button className="w-48 bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white py-3 rounded-full font-medium shadow-md transition-transform transform hover:scale-105">
+                <button
+                  disabled={ltvValue > 82}
+                  className="w-48 bg-gradient-to-br from-blue-400 to-blue-600 text-white py-3 rounded-full font-medium shadow-md transition-transform transform enabled:hover:scale-105 enabled:hover:from-blue-500 enabled:hover:to-blue-700 disabled:bg-none disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none"
+                >
                   Borrow
                 </button>
               </div>
