@@ -1,6 +1,7 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import BorrowPage from './components/BorrowPage';
+import BorrowListPage from './components/BorrowListPage';
+import BorrowPoolDetailsPage from './components/BorrowPoolDetailsPage';
 import LendPage from './components/LendPage';
 import Layout from './components/Layout';
 
@@ -18,7 +19,8 @@ export default function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/lend" element={<LendPage />} />
-        <Route path="/borrow" element={<BorrowPage />} />
+        <Route path="/borrow" element={<BorrowListPage />} />
+        <Route path="/borrow/:poolId" element={<BorrowPoolDetailsPage />} />
         <Route path="/spend" element={<SpendPage />} />
         <Route path="*" element={<Navigate to="/borrow" replace />} />
       </Route>
