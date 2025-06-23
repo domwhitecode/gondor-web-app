@@ -1,11 +1,71 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Info, X, Check } from 'lucide-react';
+import { ethers } from 'ethers';
 
 export default function BorrowPage() {
   const [ltvValue, setLtvValue] = useState(44.95);
   const [depositAmount, setDepositAmount] = useState('5401');
   const [borrowAmount, setBorrowAmount] = useState('200.16');
   const [selectedOption, setSelectedOption] = useState('NO');
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState('');
+  const [isConnecting, setIsConnecting] = useState(false);
+
+  useEffect(() => {
+    // Check if wallet is already connected on component mount
+    checkWalletConnection();
+  }, []);
+
+  const checkWalletConnection = async () => {
+    if (typeof window.ethereum !== 'undefined') {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+        if (accounts.length > 0) {
+          setWalletConnected(true);
+          setWalletAddress(accounts[0]);
+        }
+      } catch (error) {
+        console.error('Error checking wallet connection:', error);
+      }
+    }
+  };
+
+  const connectWallet = async () => {
+    if (typeof window.ethereum === 'undefined') {
+      alert('MetaMask is not installed. Please install MetaMask to use this feature.');
+      return;
+    }
+
+    setIsConnecting(true);
+    try {
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts'
+      });
+      
+      if (accounts.length > 0) {
+        setWalletConnected(true);
+        setWalletAddress(accounts[0]);
+      }
+    } catch (error) {
+      console.error('Error connecting wallet:', error);
+      if (error.code === 4001) {
+        alert('Please connect your MetaMask wallet to continue.');
+      } else {
+        alert('Error connecting wallet. Please try again.');
+      }
+    } finally {
+      setIsConnecting(false);
+    }
+  };
+
+  const disconnectWallet = () => {
+    setWalletConnected(false);
+    setWalletAddress('');
+  };
+
+  const formatAddress = (address) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
+  };
 
   const handleLtvChange = (e) => {
     setLtvValue(parseFloat(e.target.value));
@@ -44,8 +104,12 @@ export default function BorrowPage() {
               </button>
             </div>
           </div>
-          <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">
-            Connect wallet
+          <button 
+            onClick={walletConnected ? disconnectWallet : connectWallet}
+            disabled={isConnecting}
+            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+          >
+            {isConnecting ? 'Connecting...' : walletConnected ? formatAddress(walletAddress) : 'Connect wallet'}
           </button>
         </div>
       </div>
