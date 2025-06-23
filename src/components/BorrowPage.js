@@ -136,10 +136,8 @@ export default function BorrowPage() {
           Back to pools
         </button>
 
-        {/* Pool Info Header */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">Pool info</h2>
-          
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Pool info</h2>
+        <div className="bg-white rounded-xl shadow-sm p-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center">
@@ -171,93 +169,76 @@ export default function BorrowPage() {
           </div>
         </div>
 
+        <hr className="my-8 border-gray-200" />
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Deposit and Borrow Section */}
           <div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-              <h3 className="text-xl font-bold text-gray-900 mb-6">Deposit & Borrow</h3>
-              
-              {/* Amounts Section - Side by Side */}
-              <div className="flex space-x-4">
-                {/* Deposit Amount */}
-                <div className="flex-1">
-                  <div className="flex items-center mb-3">
-                    <span className="text-sm font-medium text-gray-700">Deposit amount</span>
-                    <Info className="w-4 h-4 ml-2 text-gray-400" />
-                  </div>
-                  <div 
-                    className={`rounded-lg ${depositFocused ? 'border border-gray-300 p-4' : 'border border-transparent p-4'}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-3">
-                        <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                          selectedOption === 'YES' ? 'bg-green-500' : 'bg-red-500'
-                        }`}>
-                          {selectedOption === 'YES' ? (
-                            <Check className="w-3 h-3 text-white" />
-                          ) : (
-                            <X className="w-3 h-3 text-white" />
-                          )}
-                        </div>
-                        <select 
-                          value={selectedOption} 
-                          onChange={handleOptionChange}
-                          className="font-medium text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0"
-                        >
-                          <option value="NO">NO</option>
-                          <option value="YES">YES</option>
-                        </select>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center">
-                          <span className="text-2xl font-bold text-gray-900">$</span>
-                          <input
-                            type="text"
-                            value={depositAmount}
-                            onChange={handleAmountChange}
-                            onFocus={() => setDepositFocused(true)}
-                            onBlur={() => setDepositFocused(false)}
-                            className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-20 ml-1"
-                            placeholder="0.00"
-                          />
-                        </div>
-                      </div>
+            <div className="flex space-x-4 mb-8">
+              {/* Deposit Card */}
+              <div className={`flex-1 bg-white rounded-xl shadow-sm border p-6 ${depositFocused ? 'border-blue-500' : 'border-gray-200'}`}>
+                <div className="flex items-center mb-3">
+                  <span className="text-sm font-medium text-gray-700">Deposit collateral</span>
+                  <Info className="w-4 h-4 ml-2 text-gray-400" />
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2 bg-gray-100 rounded-full p-1 pr-3">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${selectedOption === 'YES' ? 'bg-green-500' : 'bg-red-500'}`}>
+                      {selectedOption === 'YES' ? <Check className="w-3 h-3 text-white" /> : <X className="w-3 h-3 text-white" />}
                     </div>
-                    <div className="text-sm text-gray-500">25.32 / 2,600 shares</div>
+                    <select 
+                      value={selectedOption} 
+                      onChange={handleOptionChange}
+                      className="font-medium text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 appearance-none"
+                    >
+                      <option value="NO">NO</option>
+                      <option value="YES">YES</option>
+                    </select>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center">
+                      <span className="text-2xl font-bold text-gray-900">$</span>
+                      <input
+                        type="text"
+                        value={depositAmount}
+                        onChange={handleAmountChange}
+                        onFocus={() => setDepositFocused(true)}
+                        onBlur={() => setDepositFocused(false)}
+                        className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-20 ml-1"
+                        placeholder="0.00"
+                      />
+                    </div>
                   </div>
                 </div>
+                <div className="text-sm text-gray-500 text-right">25.32 / 2,600 shares</div>
+              </div>
 
-                {/* Borrow Amount */}
-                <div className="flex-1">
-                  <div className="text-sm font-medium text-gray-700 mb-3">Borrow amount</div>
-                  <div 
-                    className={`rounded-lg ${borrowFocused ? 'border border-gray-300 p-4' : 'border border-transparent p-4'}`}
-                  >
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                          <span className="text-white text-sm font-bold">T</span>
-                        </div>
-                        <span className="font-medium text-gray-700">USDT</span>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center">
-                          <span className="text-xl font-bold text-gray-900">$</span>
-                          <input
-                            type="text"
-                            value={borrowAmount}
-                            onChange={handleBorrowAmountChange}
-                            onFocus={() => setBorrowFocused(true)}
-                            onBlur={() => setBorrowFocused(false)}
-                            className="text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-16 ml-1"
-                            placeholder="0.00"
-                          />
-                        </div>
-                      </div>
+              {/* Borrow Card */}
+              <div className={`flex-1 bg-white rounded-xl shadow-sm border p-6 ${borrowFocused ? 'border-blue-500' : 'border-gray-200'}`}>
+                <div className="text-sm font-medium text-gray-700 mb-3">Borrow</div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-2 bg-gray-100 rounded-full p-1 pr-3">
+                    <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <span className="text-white text-sm font-bold">T</span>
                     </div>
-                    <div className="text-sm text-gray-500">$ 199.22</div>
+                    <span className="font-medium text-gray-700">USDT</span>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center">
+                      <span className="text-xl font-bold text-gray-900">$</span>
+                      <input
+                        type="text"
+                        value={borrowAmount}
+                        onChange={handleBorrowAmountChange}
+                        onFocus={() => setBorrowFocused(true)}
+                        onBlur={() => setBorrowFocused(false)}
+                        className="text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-16 ml-1"
+                        placeholder="0.00"
+                      />
+                    </div>
                   </div>
                 </div>
+                <div className="text-sm text-gray-500 text-right">$ 199.22</div>
               </div>
             </div>
 
