@@ -11,6 +11,7 @@ export default function BorrowPage() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [depositFocused, setDepositFocused] = useState(false);
   const [borrowFocused, setBorrowFocused] = useState(false);
+  const [activeTab, setActiveTab] = useState('borrow');
 
   // Calculate LTV dynamically
   const calculateLTV = () => {
@@ -105,27 +106,45 @@ export default function BorrowPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="flex items-center justify-between max-w-7xl mx-auto">
-          <div className="flex items-center space-x-8">
-            <h1 className="text-2xl font-bold text-gray-900">Gondor°</h1>
-            <div className="flex items-center space-x-6">
-              <span className="text-gray-600">I want to...</span>
-              <button className="px-4 py-2 text-gray-600 hover:text-gray-900">
-                Lend
-              </button>
-              <button className="px-4 py-2 text-blue-600 border-b-2 border-blue-600 font-medium">
-                Borrow
-              </button>
+      <div className="px-6 py-4">
+        <div className="bg-white rounded-full shadow-sm p-2 max-w-7xl mx-auto">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold text-gray-900 pl-4">Gondor°</h1>
+            
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-gray-500">I want to...</span>
+              <div className="flex items-center bg-gray-100 rounded-full p-1">
+                <button
+                  onClick={() => setActiveTab('lend')}
+                  className={`px-4 py-1 text-sm font-medium rounded-full transition-colors ${
+                    activeTab === 'lend'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'bg-transparent text-gray-600'
+                  }`}
+                >
+                  Lend
+                </button>
+                <button
+                  onClick={() => setActiveTab('borrow')}
+                  className={`px-4 py-1 text-sm font-medium rounded-full transition-colors ${
+                    activeTab === 'borrow'
+                      ? 'bg-white text-gray-900 shadow-sm'
+                      : 'bg-transparent text-gray-600'
+                  }`}
+                >
+                  Borrow
+                </button>
+              </div>
             </div>
+
+            <button
+              onClick={walletConnected ? disconnectWallet : connectWallet}
+              disabled={isConnecting}
+              className="bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-full font-medium shadow-md transition-transform transform hover:scale-105"
+            >
+              {isConnecting ? 'Connecting...' : walletConnected ? formatAddress(walletAddress) : 'Connect wallet'}
+            </button>
           </div>
-          <button 
-            onClick={walletConnected ? disconnectWallet : connectWallet}
-            disabled={isConnecting}
-            className="bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-full font-medium shadow-md transition-transform transform hover:scale-105"
-          >
-            {isConnecting ? 'Connecting...' : walletConnected ? formatAddress(walletAddress) : 'Connect wallet'}
-          </button>
         </div>
       </div>
 
@@ -225,14 +244,14 @@ export default function BorrowPage() {
                   </div>
                   <div className="text-right">
                     <div className="flex items-center">
-                      <span className="text-xl font-bold text-gray-900">$</span>
+                      <span className="text-2xl font-bold text-gray-900">$</span>
                       <input
                         type="text"
                         value={borrowAmount}
                         onChange={handleBorrowAmountChange}
                         onFocus={() => setBorrowFocused(true)}
                         onBlur={() => setBorrowFocused(false)}
-                        className="text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-16 ml-1"
+                        className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-20 ml-1"
                         placeholder="0.00"
                       />
                     </div>
