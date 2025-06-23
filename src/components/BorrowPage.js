@@ -3,13 +3,30 @@ import { ChevronLeft, Info, X, Check } from 'lucide-react';
 import { ethers } from 'ethers';
 
 export default function BorrowPage() {
-  const [ltvValue, setLtvValue] = useState(44.95);
   const [depositAmount, setDepositAmount] = useState('5401');
   const [borrowAmount, setBorrowAmount] = useState('200.16');
   const [selectedOption, setSelectedOption] = useState('NO');
   const [walletConnected, setWalletConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState('');
   const [isConnecting, setIsConnecting] = useState(false);
+
+  // Calculate LTV dynamically
+  const calculateLTV = () => {
+    const deposit = parseFloat(depositAmount) || 0;
+    const borrow = parseFloat(borrowAmount) || 0;
+    if (deposit === 0) return 0;
+    return (borrow / deposit) * 100;
+  };
+
+  const ltvValue = calculateLTV();
+
+  const handleLtvChange = (e) => {
+    // When user moves the slider, update the borrow amount based on the new LTV
+    const newLTV = parseFloat(e.target.value);
+    const deposit = parseFloat(depositAmount) || 0;
+    const newBorrowAmount = (deposit * newLTV) / 100;
+    setBorrowAmount(newBorrowAmount.toFixed(2));
+  };
 
   useEffect(() => {
     // Check if wallet is already connected on component mount
@@ -65,10 +82,6 @@ export default function BorrowPage() {
 
   const formatAddress = (address) => {
     return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
-
-  const handleLtvChange = (e) => {
-    setLtvValue(parseFloat(e.target.value));
   };
 
   const handleOptionChange = (e) => {
@@ -245,7 +258,8 @@ export default function BorrowPage() {
                   type="range"
                   min="0"
                   max="82"
-                  value={ltvValue}
+                  step="0.01"
+                  value={Math.min(ltvValue, 82)}
                   onChange={handleLtvChange}
                   className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
                 />
