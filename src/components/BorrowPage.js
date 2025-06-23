@@ -122,7 +122,7 @@ export default function BorrowPage() {
           <button 
             onClick={walletConnected ? disconnectWallet : connectWallet}
             disabled={isConnecting}
-            className="bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300 text-white px-6 py-2 rounded-lg font-medium transition-colors"
+            className="bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white px-6 py-2 rounded-full font-medium shadow-md transition-transform transform hover:scale-105"
           >
             {isConnecting ? 'Connecting...' : walletConnected ? formatAddress(walletAddress) : 'Connect wallet'}
           </button>
@@ -146,22 +146,22 @@ export default function BorrowPage() {
               <h3 className="text-lg font-semibold text-gray-900">US recession in 2025?</h3>
             </div>
             
-            <div className="flex space-x-12">
-              <div className="text-center">
+            <div className="flex items-center divide-x divide-gray-200">
+              <div className="text-center pr-6">
                 <div className="text-sm text-gray-500 mb-1">Total supply</div>
                 <div className="text-2xl font-bold text-gray-900">$2.03M</div>
               </div>
-              <div className="text-center">
+              <div className="text-center px-6">
                 <div className="text-sm text-gray-500 mb-1">Total borrowed</div>
                 <div className="text-2xl font-bold text-gray-900">$0.97M</div>
               </div>
-              <div className="text-center">
-                <div className="text-sm text-gray-500 mb-1 flex items-center">
+              <div className="text-center px-6">
+                <div className="text-sm text-gray-500 mb-1 flex items-center justify-center">
                   Borrow rate <Info className="w-3 h-3 ml-1 text-gray-400" />
                 </div>
                 <div className="text-2xl font-bold text-gray-900">4.98%</div>
               </div>
-              <div className="text-center">
+              <div className="text-center pl-6">
                 <div className="text-sm text-gray-500 mb-1">Share price</div>
                 <div className="text-2xl font-bold text-gray-900">¢67</div>
               </div>
@@ -243,64 +243,66 @@ export default function BorrowPage() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              {/* LTV Slider */}
-              <div className="mb-8">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-lg font-semibold text-gray-900">Loan to Value (LTV)</span>
-                  <span className="text-2xl font-bold text-gray-900">{ltvValue.toFixed(2)}%</span>
-                </div>
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
-                  <span>Ratio of the collateral value to the borrowed value</span>
-                  <span>max. 82.00%</span>
-                </div>
-
-                <div className="relative h-8">
-                  {/* Segmented Track */}
-                  <div className="absolute top-1/2 -translate-y-1/2 w-full flex items-center h-3">
-                    <div className="flex-1 h-full bg-gray-200 rounded-l-full"></div>
-                    <div className="w-1.5 h-full"></div> {/* Gap */}
-                    <div className="flex-1 h-full bg-gray-200"></div>
-                    <div className="w-1.5 h-full"></div> {/* Gap */}
-                    <div className="flex-1 h-full bg-gray-200 rounded-r-full"></div>
+              <div className="flex items-end space-x-6">
+                <div className="flex-1">
+                  {/* LTV Slider */}
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-lg font-semibold text-gray-900">Loan to Value (LTV)</span>
+                    <span className="text-2xl font-bold text-gray-900">{ltvValue.toFixed(2)}%</span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                    <span>Ratio of the collateral value to the borrowed value</span>
+                    <span>max. 82.00%</span>
                   </div>
 
-                  {/* Progress Fill */}
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 h-3 bg-blue-500 rounded-full"
-                    style={{ width: `${(Math.min(ltvValue, 82) / 82) * 100}%` }}
-                  ></div>
-                  
-                  {/* Liquidation Marker */}
-                  <div
-                    className="absolute top-1/2 -translate-y-1/2 w-px h-5 bg-blue-400"
-                    style={{ left: '82%' }}
-                  />
+                  <div className="relative h-8">
+                    {/* Segmented Track */}
+                    <div className="absolute top-1/2 -translate-y-1/2 w-full flex items-center h-3">
+                      <div className="flex-1 h-full bg-gray-200 rounded-l-full"></div>
+                      <div className="w-1.5 h-full"></div> {/* Gap */}
+                      <div className="flex-1 h-full bg-gray-200"></div>
+                      <div className="w-1.5 h-full"></div> {/* Gap */}
+                      <div className="flex-1 h-full bg-gray-200 rounded-r-full"></div>
+                    </div>
 
-                  <input
-                    type="range"
-                    min="0"
-                    max="82"
-                    step="0.01"
-                    value={Math.min(ltvValue, 82)}
-                    onChange={handleLtvChange}
-                    className="w-full h-full absolute top-0 left-0 appearance-none bg-transparent cursor-pointer slider"
-                  />
-                </div>
+                    {/* Progress Fill */}
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 h-3 bg-blue-500 rounded-full"
+                      style={{ width: `${(Math.min(ltvValue, 82) / 82) * 100}%` }}
+                    ></div>
+                    
+                    {/* Liquidation Marker */}
+                    <div
+                      className="absolute top-1/2 -translate-y-1/2 w-px h-5 bg-blue-400"
+                      style={{ left: '82%' }}
+                    />
 
-                <div className="flex justify-between text-xs text-gray-500 mt-2">
-                  <span>Conservative</span>
-                  <span>Moderate</span>
-                  <div className="flex flex-col items-end">
-                    <span>Aggressive</span>
-                    <span className="text-blue-600 font-medium">82.00% Liquidation</span>
+                    <input
+                      type="range"
+                      min="0"
+                      max="82"
+                      step="0.01"
+                      value={Math.min(ltvValue, 82)}
+                      onChange={handleLtvChange}
+                      className="w-full h-full absolute top-0 left-0 appearance-none bg-transparent cursor-pointer slider"
+                    />
+                  </div>
+
+                  <div className="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>Conservative</span>
+                    <span>Moderate</span>
+                    <div className="flex flex-col items-end">
+                      <span>Aggressive</span>
+                      <span className="text-blue-600 font-medium">82.00% Liquidation</span>
+                    </div>
                   </div>
                 </div>
+
+                <button className="w-48 bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white py-3 rounded-full font-medium shadow-md transition-transform transform hover:scale-105">
+                  Borrow
+                </button>
               </div>
             </div>
-
-            <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium">
-              Borrow
-            </button>
           </div>
 
           {/* Overview Section */}
