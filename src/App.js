@@ -2,7 +2,8 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import BorrowListPage from './components/BorrowListPage';
 import BorrowPoolDetailsPage from './components/BorrowPoolDetailsPage';
-import LendPage from './components/LendPage';
+import LendListPage from './components/LendListPage';
+import LendPoolDetailsPage from './components/LendPoolDetailsPage';
 import Layout from './components/Layout';
 
 function SpendPage() {
@@ -18,7 +19,8 @@ export default function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
-        <Route path="/lend" element={<LendPage />} />
+        <Route path="/lend" element={<LendListPage />} />
+        <Route path="/lend/:poolId" element={<LendPoolDetailsPage />} />
         <Route path="/borrow" element={<BorrowListPage />} />
         <Route path="/borrow/:poolId" element={<BorrowPoolDetailsPage />} />
         <Route path="/spend" element={<SpendPage />} />
