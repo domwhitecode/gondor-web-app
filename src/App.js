@@ -1,12 +1,27 @@
-import './App.css';
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import BorrowPage from './components/BorrowPage';
+import LendPage from './components/LendPage';
+import Layout from './components/Layout';
 
-function App() {
+function SpendPage() {
   return (
-    <div className="App">
-      <BorrowPage />
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center">
+      <h1 className="text-3xl font-bold mb-4">Spend</h1>
+      <p className="text-lg text-gray-600">This is the Spend page. (Design me!)</p>
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/lend" element={<LendPage />} />
+        <Route path="/borrow" element={<BorrowPage />} />
+        <Route path="/spend" element={<SpendPage />} />
+        <Route path="*" element={<Navigate to="/borrow" replace />} />
+      </Route>
+    </Routes>
+  );
+}

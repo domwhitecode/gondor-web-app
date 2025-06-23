@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Info, X, Check } from 'lucide-react';
 import bscLogo from '../bnb-chain-binance-smart-chain-logo.png';
 import Jazzicon from 'react-jazzicon';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 export default function BorrowPage() {
   const [depositAmount, setDepositAmount] = useState('5401');
@@ -12,7 +13,9 @@ export default function BorrowPage() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [depositFocused, setDepositFocused] = useState(false);
   const [borrowFocused, setBorrowFocused] = useState(false);
-  const [activeTab, setActiveTab] = useState('borrow');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const activeTab = location.pathname.replace('/', '') || 'borrow';
 
   // Calculate LTV dynamically
   const calculateLTV = () => {
@@ -106,63 +109,6 @@ export default function BorrowPage() {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* Header */}
-      <div className="px-6 py-4">
-        <div className="bg-white rounded-full shadow-sm p-2 max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-gray-900 pl-4">Gondor°</h1>
-            
-            <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">I want to...</span>
-              <div className="flex items-center bg-gray-100 rounded-full p-1">
-                <button
-                  onClick={() => setActiveTab('lend')}
-                  className={`px-4 py-1 text-sm font-medium rounded-full transition-colors ${
-                    activeTab === 'lend'
-                      ? 'bg-white text-gray-900 shadow-sm'
-                      : 'bg-transparent text-gray-600'
-                  }`}
-                >
-                  Lend
-                </button>
-                <button
-                  onClick={() => setActiveTab('borrow')}
-                  className={`px-4 py-1 text-sm font-medium rounded-full transition-colors ${
-                    activeTab === 'borrow'
-                      ? 'bg-white text-gray-900 shadow-sm'
-                      : 'bg-transparent text-gray-600'
-                  }`}
-                >
-                  Borrow
-                </button>
-              </div>
-            </div>
-
-            <button
-              onClick={walletConnected ? disconnectWallet : connectWallet}
-              disabled={isConnecting}
-              className={`flex items-center space-x-2 px-6 py-2 rounded-full font-medium shadow-md transition-transform transform
-                ${walletConnected
-                  ? 'bg-white text-gray-900'
-                  : 'bg-gradient-to-br from-blue-400 to-blue-600 hover:from-blue-500 hover:to-blue-700 text-white hover:scale-105'}
-                disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none`}
-            >
-              {isConnecting ? 'Connecting...' : walletConnected ? (
-                <>
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-white mr-2">
-                    <img src={bscLogo} alt="BSC" className="w-6 h-6" />
-                  </span>
-                  <span className="flex items-center bg-white rounded-full px-3 py-1 text-sm font-mono font-medium border border-gray-200">
-                    <Jazzicon diameter={24} seed={parseInt(walletAddress.slice(2, 10), 16)} />
-                    <span className="ml-2">{formatAddress(walletAddress)}</span>
-                  </span>
-                </>
-              ) : 'Connect wallet'}
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div className="max-w-7xl mx-auto px-6 py-8">
         {/* Back button */}
         <button className="flex items-center text-blue-600 hover:text-blue-700 mb-6">
