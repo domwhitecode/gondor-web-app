@@ -1,0 +1,267 @@
+import React, { useState } from 'react';
+import { ChevronLeft, Info, X, Check } from 'lucide-react';
+
+export default function BorrowPage() {
+  const [ltvValue, setLtvValue] = useState(44.95);
+  const [depositAmount, setDepositAmount] = useState('5401');
+  const [borrowAmount, setBorrowAmount] = useState('200.16');
+  const [selectedOption, setSelectedOption] = useState('NO');
+
+  const handleLtvChange = (e) => {
+    setLtvValue(parseFloat(e.target.value));
+  };
+
+  const handleOptionChange = (e) => {
+    setSelectedOption(e.target.value);
+  };
+
+  const handleAmountChange = (e) => {
+    // Only allow numbers and remove any non-numeric characters
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+    setDepositAmount(numericValue);
+  };
+
+  const handleBorrowAmountChange = (e) => {
+    // Only allow numbers and remove any non-numeric characters
+    const numericValue = e.target.value.replace(/[^0-9]/g, '');
+    setBorrowAmount(numericValue);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div className="flex items-center space-x-8">
+            <h1 className="text-2xl font-bold text-gray-900">Gondor°</h1>
+            <div className="flex items-center space-x-6">
+              <span className="text-gray-600">I want to...</span>
+              <button className="px-4 py-2 text-gray-600 hover:text-gray-900">
+                Lend
+              </button>
+              <button className="px-4 py-2 text-blue-600 border-b-2 border-blue-600 font-medium">
+                Borrow
+              </button>
+            </div>
+          </div>
+          <button className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium">
+            Connect wallet
+          </button>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Back button */}
+        <button className="flex items-center text-blue-600 hover:text-blue-700 mb-6">
+          <ChevronLeft className="w-4 h-4 mr-1" />
+          Back to pools
+        </button>
+
+        {/* Pool Info Header */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">Pool info</h2>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center">
+                <span className="text-white text-lg">📉</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900">US recession in 2025?</h3>
+            </div>
+            
+            <div className="flex space-x-12">
+              <div className="text-center">
+                <div className="text-sm text-gray-500 mb-1">Total supply</div>
+                <div className="text-2xl font-bold text-gray-900">$2.03M</div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-500 mb-1">Total borrowed</div>
+                <div className="text-2xl font-bold text-gray-900">$0.97M</div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-500 mb-1 flex items-center">
+                  Borrow rate <Info className="w-3 h-3 ml-1 text-gray-400" />
+                </div>
+                <div className="text-2xl font-bold text-gray-900">4.98%</div>
+              </div>
+              <div className="text-center">
+                <div className="text-sm text-gray-500 mb-1">Share price</div>
+                <div className="text-2xl font-bold text-gray-900">¢67</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Borrow Section */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Borrow</h3>
+            
+            {/* Deposit Amount */}
+            <div className="mb-6">
+              <div className="flex items-center mb-3">
+                <span className="text-sm font-medium text-gray-700">Deposit amount</span>
+                <Info className="w-4 h-4 ml-2 text-gray-400" />
+              </div>
+              <div className="border border-gray-300 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                      selectedOption === 'YES' ? 'bg-green-500' : 'bg-red-500'
+                    }`}>
+                      {selectedOption === 'YES' ? (
+                        <Check className="w-3 h-3 text-white" />
+                      ) : (
+                        <X className="w-3 h-3 text-white" />
+                      )}
+                    </div>
+                    <select 
+                      value={selectedOption} 
+                      onChange={handleOptionChange}
+                      className="font-medium text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0"
+                    >
+                      <option value="NO">NO</option>
+                      <option value="YES">YES</option>
+                    </select>
+                  </div>
+                  <div className="text-right">
+                    <div className="flex items-center">
+                      <span className="text-2xl font-bold text-gray-900">$</span>
+                      <input
+                        type="text"
+                        value={depositAmount}
+                        onChange={handleAmountChange}
+                        className="text-2xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-20 ml-1"
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-500">25.32 / 2,600 shares</div>
+              </div>
+            </div>
+
+            {/* Borrow Amount */}
+            <div className="mb-6">
+              <div className="text-sm font-medium text-gray-700 mb-3">Borrow amount</div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-bold">T</span>
+                </div>
+                <span className="font-medium text-gray-700">USDT</span>
+                <div className="ml-auto text-right">
+                  <div className="flex items-center">
+                    <span className="text-xl font-bold text-gray-900">$</span>
+                    <input
+                      type="text"
+                      value={borrowAmount}
+                      onChange={handleBorrowAmountChange}
+                      className="text-xl font-bold text-gray-900 bg-transparent border-none focus:outline-none focus:ring-0 text-right w-16 ml-1"
+                      placeholder="0.00"
+                    />
+                  </div>
+                  <div className="text-sm text-gray-500">$ 199.22</div>
+                </div>
+              </div>
+            </div>
+
+            {/* LTV Slider */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-sm font-medium text-gray-700">Loan to Value (LTV)</span>
+                <span className="text-xl font-bold text-gray-900">{ltvValue.toFixed(2)}%</span>
+              </div>
+              <div className="text-xs text-gray-500 mb-4">
+                Ratio of the collateral value to the borrowed value
+              </div>
+              <div className="text-xs text-gray-400 mb-2 text-right">max. 82.00%</div>
+              
+              <div className="relative">
+                <input
+                  type="range"
+                  min="0"
+                  max="82"
+                  value={ltvValue}
+                  onChange={handleLtvChange}
+                  className="w-full h-2 bg-blue-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-2">
+                  <span>Conservative</span>
+                  <span>Moderate</span>
+                  <span>Aggressive</span>
+                </div>
+              </div>
+              
+              <div className="flex justify-between items-center mt-4">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-blue-300 rounded"></div>
+                  <span className="text-xs text-gray-500">82.00%</span>
+                  <span className="text-xs text-gray-500">Liquidation</span>
+                </div>
+              </div>
+            </div>
+
+            <button className="w-full bg-blue-500 hover:bg-blue-600 text-white py-3 rounded-lg font-medium">
+              Borrow
+            </button>
+          </div>
+
+          {/* Overview Section */}
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-6">Overview</h3>
+            
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">Liquidation price</span>
+                <span className="font-medium text-gray-900">¢45</span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">Liquidation LTV</span>
+                <span className="font-medium text-gray-900">50%</span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">Current LTV</span>
+                <span className="font-medium text-gray-900">33.02%</span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">Current loan</span>
+                <span className="font-medium text-gray-900">$ 552.75</span>
+              </div>
+              
+              <div className="flex justify-between items-center">
+                <span className="text-gray-700">Health rate</span>
+                <span className="font-medium text-green-600">3.74</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #3B82F6;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .slider::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: #3B82F6;
+          cursor: pointer;
+          border: 2px solid white;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+      `}</style>
+    </div>
+  );
+}
