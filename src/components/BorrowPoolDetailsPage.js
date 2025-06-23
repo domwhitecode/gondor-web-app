@@ -13,6 +13,7 @@ export default function BorrowPoolDetailsPage() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [depositFocused, setDepositFocused] = useState(false);
   const [borrowFocused, setBorrowFocused] = useState(false);
+  const [selectedCoin, setSelectedCoin] = useState('USDT');
   const navigate = useNavigate();
   const location = useLocation();
   const { poolId } = useParams();
@@ -106,6 +107,9 @@ export default function BorrowPoolDetailsPage() {
     const numericValue = e.target.value.replace(/[^0-9]/g, '');
     setBorrowAmount(numericValue);
   };
+
+  // Mock wallet coins for demo; in real app, fetch from wallet
+  const walletCoins = walletConnected ? ['USDT', 'USDC'] : ['USDT'];
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -201,7 +205,15 @@ export default function BorrowPoolDetailsPage() {
                     <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
                       <span className="text-white text-sm font-bold">T</span>
                     </div>
-                    <span className="font-medium text-gray-700">USDT</span>
+                    <select
+                      value={selectedCoin}
+                      onChange={e => setSelectedCoin(e.target.value)}
+                      className="font-medium text-gray-700 bg-transparent border-none focus:outline-none focus:ring-0 appearance-none"
+                    >
+                      {walletCoins.map(coin => (
+                        <option key={coin} value={coin}>{coin}</option>
+                      ))}
+                    </select>
                   </div>
                   <div className="text-right">
                     <div className="flex items-center">
